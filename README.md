@@ -24,3 +24,5 @@ Log of notes and learning:
   - used AWS Glue as spark has its own logistic regression class and the process can be parallelized
   - tried to apply LightGB but could not figure out how to train one
   - final: completed the logistic regression as a baseline and went on a side track to taking a crash course on sagemaker
+
+1-5 Feb: working on training and deploying LightGB on sagemaker
