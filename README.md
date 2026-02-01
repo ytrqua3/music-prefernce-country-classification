@@ -1,6 +1,6 @@
 # music-prefernce-country-classification
-This project is an extension to the term-project-3280.
-link to project: https://github.com/ytrqua3/news_aggregator_project
+This project is an extension to the term-project-3280.\n
+link to project: https://github.com/ytrqua3/news_aggregator_project\n
 After taking CPSC3280 in Langara, I found that the course mainly focuses on introducing different cloud services (e.g. ec2, s3, load balancer, Kinesis, Aurora, DynamoDB...) and building data ETL pipelines using AWS Glue and pyspark. In the term project, I deployed a pipeline that aggregates data and api gateways to fetch the data. Within the project, spark was used to form embeddings for each artist using a simple neural network model called word2vec. Later, an idea that I could predict users' country according to their preference in artists popped up. 
 
 
