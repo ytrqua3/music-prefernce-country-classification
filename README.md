@@ -25,4 +25,25 @@ Log of notes and learning:
   - tried to apply LightGB but could not figure out how to train one
   - final: completed the logistic regression as a baseline and went on a side track to taking a crash course on sagemaker
 
-1-5 Feb: working on training and deploying LightGB on sagemaker
+1-2 Feb: working on training and deploying LightGB on sagemaker
+  - base model did not work very well
+      training accuracy: 0.6598848248296058
+      validation accuracy: 0.5045294648694082
+      training accuracy for top 10 countries:0.6984821241437128
+      validation accuracy for top 10 countries:0.6452061945362798
+      top5 accuracy of training: 0.9347353750631271
+      top5 accuracy of validaton: 0.7419294586433397
+      training accuracy for tail 10 countries:0.9002217294900222
+      validation accuracy for tail 10 countries:0.0
+  - Conclusion for base model: tail countries are unlearnable due to its small size. The model is underfitting in the top countries, so next step will be increasing the model complexity.
+  - Sidetrack: experimented on weights on lightgbm (didn't work as it exagerates the overfitting in rare categories)
+
+3-5 Feb: train a model with two layers (region and country)
+  - The idea is to classify the users into regions first then country.
+  - grouping the countries into regions according to continent and culture(my instinct)
+  - region model worked pretty well in locking in the top 3
+      training accuracy: 0.6222407101455532
+      validation accuracy: 0.571392910634049
+      top3 accuracy of training: 0.9265759101486926
+      top3 accuracy of validaton: 0.8804293559660509
+    
