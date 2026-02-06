@@ -42,8 +42,6 @@ Log of notes and learning:
   - The idea is to classify the users into regions first then country.
   - grouping the countries into regions according to continent and culture(my instinct)
   - region model worked pretty well in locking in the top 3
-      training accuracy: 0.6222407101455532
-      validation accuracy: 0.571392910634049
-      top3 accuracy of training: 0.9265759101486926
-      top3 accuracy of validaton: 0.8804293559660509
+  - adjusted hyperparameters based on average users per country in each region (low -> tend to overfit -> smaller tree for generalization)
+  - country classifiers given region worked as expected
     
