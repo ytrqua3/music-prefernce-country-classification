@@ -27,21 +27,36 @@ Log of notes and learning:
 
 1-2 Feb: working on training and deploying LightGB on sagemaker
   - base model did not work very well
-      training accuracy: 0.6598848248296058
-      validation accuracy: 0.5045294648694082
-      training accuracy for top 10 countries:0.6984821241437128
-      validation accuracy for top 10 countries:0.6452061945362798
-      top5 accuracy of training: 0.9347353750631271
-      top5 accuracy of validaton: 0.7419294586433397
-      training accuracy for tail 10 countries:0.9002217294900222
-      validation accuracy for tail 10 countries:0.0
+      -> training accuracy: 0.6598848248296058
+      -> validation accuracy: 0.5045294648694082
+      -> training accuracy for top 10 countries:0.6984821241437128
+      -> validation accuracy for top 10 countries:0.6452061945362798
+      -> top5 accuracy of training: 0.9347353750631271
+      -> top5 accuracy of validaton: 0.7419294586433397
+      -> training accuracy for tail 10 countries:0.9002217294900222
+      -> validation accuracy for tail 10 countries:0.0
   - Conclusion for base model: tail countries are unlearnable due to its small size. The model is underfitting in the top countries, so next step will be increasing the model complexity.
   - Sidetrack: experimented on weights on lightgbm (didn't work as it exagerates the overfitting in rare categories)
 
-3-5 Feb: train a model with two layers (region and country)
+3-6 Feb: train a model with two layers (region and country)
   - The idea is to classify the users into regions first then country.
   - grouping the countries into regions according to continent and culture(my instinct)
   - region model worked pretty well in locking in the top 3
   - adjusted hyperparameters based on average users per country in each region (low -> tend to overfit -> smaller tree for generalization)
   - country classifiers given region worked as expected
+  - I am currently calculating the probability array user by user which takes a lot of time. I should batch it per region.
+  - result:
+        -> training accuracy: 0.5515714952849256
+        -> validation accuracy: 0.5003432351472791
+        -> training accuracy for top 10 countries:0.6830441353292224
+        -> validation accuracy for top 10 countries:0.6451626935792587
+        -> training accuracy for tail 10 countries:0.07982261640798226
+        -> validation accuracy for tail 10 countries:0.0
+        -> top5 accuracy of training: 0.8218082497125433
+        -> top5 accuracy of validaton: 0.7176110833749376
+  - the result is similar to that of base lightgbm.
+
+7-8 Feb: finalizing and evaluating the model
+  - Conclusion:
+        -> the region layer was not able to eliminate the error in the previous model. But the classifier for region itself has decent performance. Therefore, there is a high overlap within groups and I would make a deduction that there is a high overlap in music preference within every region due to cultural influence.
     
