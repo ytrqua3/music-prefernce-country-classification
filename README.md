@@ -56,7 +56,11 @@ Log of notes and learning:
         -> top5 accuracy of validaton: 0.7176110833749376
   - the result is similar to that of base lightgbm.
 
-7-8 Feb: finalizing and evaluating the model
-  - Conclusion:
-        -> the region layer was not able to eliminate the error in the previous model. But the classifier for region itself has decent performance. Therefore, there is a high overlap within groups and I would make a deduction that there is a high overlap in music preference within every region due to cultural influence.
+9-10 Feb: finalize and evaluate the model
+  - Transfer from jupyterlab to sagemaker notebook
+  - use framework estimator (sagenaker.SKLearn) to launch training job
+
+12 Feb: deploy the model as an endpoint
+
+13-14 Feb: complete the pipeline by fixing the embedding glue job
     
