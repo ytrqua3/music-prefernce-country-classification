@@ -27,13 +27,9 @@ Log of notes and learning:
 
 1-2 Feb: working on training and deploying LightGB on sagemaker
   - base model did not work very well
-      -> training accuracy: 0.6598848248296058
       -> validation accuracy: 0.5045294648694082
-      -> training accuracy for top 10 countries:0.6984821241437128
       -> validation accuracy for top 10 countries:0.6452061945362798
-      -> top5 accuracy of training: 0.9347353750631271
       -> top5 accuracy of validaton: 0.7419294586433397
-      -> training accuracy for tail 10 countries:0.9002217294900222
       -> validation accuracy for tail 10 countries:0.0
   - Conclusion for base model: tail countries are unlearnable due to its small size. The model is underfitting in the top countries, so next step will be increasing the model complexity.
   - Sidetrack: experimented on weights on lightgbm (didn't work as it exagerates the overfitting in rare categories)
@@ -46,20 +42,34 @@ Log of notes and learning:
   - country classifiers given region worked as expected
   - I am currently calculating the probability array user by user which takes a lot of time. I should batch it per region.
   - result:
-        -> training accuracy: 0.5515714952849256
         -> validation accuracy: 0.5003432351472791
-        -> training accuracy for top 10 countries:0.6830441353292224
         -> validation accuracy for top 10 countries:0.6451626935792587
-        -> training accuracy for tail 10 countries:0.07982261640798226
         -> validation accuracy for tail 10 countries:0.0
-        -> top5 accuracy of training: 0.8218082497125433
         -> top5 accuracy of validaton: 0.7176110833749376
   - the result is similar to that of base lightgbm.
 
-9-10 Feb: finalize and evaluate the model
-  - Transfer from jupyterlab to sagemaker notebook
-  - use framework estimator (sagenaker.SKLearn) to launch training job
-
+9-10 Feb: clean up metrics and evaluate the model
+  - Because the metrics are slightly lower than flat lightGBM (not what I expected), I spent more time on evaluating the process
+  - When I was developing the model, I was just focusing on accuracy and top-k accuracy. They did very good for the region layer (~90% for each region), so I carried on to the next step without careful examination. Now that I added metrics like recall and f1, they look pretty bad for small regions. **I should've done that before carrying on.
+  - Also, the fact that the two layer version resulted in very similar accuracy as the flat lightGBM shows that it already captured regional characteristics, making the extra layer redundant.
+  - After looking at the second layer (P(country | region, user)), for most countries there is a decent recall and top kaccuracy, meaning that most countries (even with less users) are properly learnt and not ignored.
+  - Region by region analysis on the second layer:
+        -> Africa(1252): valid acc 0.43, top-k 0.69, recall 0.43, precision 0.25, CE: 2.96 (high), effective classes: 5.81
+        -> East Asia(5422) : valid acc 0.50, top-k 0.73, recall 0.496914, CE: 2.69, effective classes: 4.12
+        -> West Asia(10079) : valid acc 0.61, top-k 0.83, recall 0.610317, CE: 3.05 (very high), effective classes: 5.93
+        -> Nordics(93890) : valid acc 0.58, top-k 0.90,recall 0.579929, CE: 1.92, effective classes: 3.32
+        -> Western Core / DACH: valid acc 0.53, top-k 0.86, recall 0.532473, CE: 2.12, effective classes 3.48
+        -> Anglo-Europe(21637) : valid acc 0.94, top-k 1.0, recall 0.936473, CE: 0.33, effective classes 1.13
+        -> Southern Europe(11384) : valid acc 0.59, top-k 0.91, recall 0.586895, CE: 2.0, effective classes 3.57
+        -> Central & Eastern Europe(18517) : valid acc 0.59, top-k 0.79,recall 0.590048, CE: 2.40, effective classes 3.19
+        -> Balkans(14738) : valid acc 0.68, top-k 0.86, CE: 1.95, recall 0.676663, effective classes 2.38
+        -> Anglo-America(64400) : valid acc 0.88, top-k 0.99, recall 0.879586, CE: 0.57, effective classes 1.27
+        -> Latin America(70237) : valid acc 0.83, top-k 0.92, recall 0.825875, CE: 1.53, effective classes 1.77
+        -> Oceania(8156): valid acc 0.79, top-k 0.97, recall 0.788610, CE: 1.0, effective classes 1.5
+      Conclusion: 1. The model performs better as the CE(cross entropy) decreases. Meaning that regions with more disperse users have similar taste across the region.
+                  2. The recall for each region is at least 0.4, showing that small countries are not completey ignored. (Anglo Europe, Central&Eastern Europe, Balkans, Anglo-america, Latin America, Oceania are regions with dominant country but the recall is still good)
+                  3. The model is usually uncertain with the ranking but does not ignore tail countries.
+    
 12 Feb: deploy the model as an endpoint
 
 13-14 Feb: complete the pipeline by fixing the embedding glue job
