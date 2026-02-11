@@ -81,6 +81,8 @@ validation accuracy: 0.4809015347258973<br/>
         -> validation accuracy for top 10 countries:0.6451626935792587
         -> validation accuracy for tail 10 countries:0.0
         -> top5 accuracy of validaton: 0.7176110833749376
+        -> validation recall: 0.1
+        -> validation precision: 0.1
   - the result is similar to that of base lightgbm.
 
 9-10 Feb: clean up metrics and evaluate the model
@@ -126,8 +128,11 @@ validation accuracy: 0.4809015347258973<br/>
                       3. Add top k accuracy: if high-> the model does learn but tail county got dominated, if low -> the model did not learn at all
 
   - When I was developing the model, I was just focusing on accuracy and top-k accuracy. They did very good for the region layer (~90% for each region), so I carried on to the next step without careful examination. Now that I added metrics like recall and f1, they look pretty bad for small regions. **I should've done that before carrying on.
+  - Next step: apply weights to both layers (expect to have a lower accuracy in individual models but higher recall)
     
-12 Feb: deploy the model as an endpoint
+15 Feb: deploy the model as an endpoint (although two methods result in similar result, I deploy the two layer model to challenge myself)
 
-13-14 Feb: complete the pipeline by fixing the embedding glue job
+16 Feb: finalize aws glue for embeddings and connect with endpoint
+
+
     
