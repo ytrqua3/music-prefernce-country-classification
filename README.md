@@ -101,15 +101,30 @@ validation accuracy: 0.4809015347258973
     | Southern Europe          | 11384        | 4004         | 0.962     | 0.717      | 0.252     | 0.373    | 0.547          | 0.958   | 0.554    | 0.172   | 0.263  | 0.416        |
     | West Asia                | 10079        | 4677         | 0.970     | 0.759      | 0.352     | 0.481    | 0.607          | 0.965   | 0.633    | 0.264   | 0.373  | 0.460        |
     | Western Core / DACH      | 19610        | 13557        | 0.928     | 0.549      | 0.380     | 0.449    | 0.768          | 0.913   | 0.437    | 0.300   | 0.356  | 0.660        |
-    Conclusion:
-      1. Tail reigions have very low recalls and still very high accuracy -> they are ignored and because of their small size, accuracy got dominated by the true negatives.
-      2. For most small regions, they have a low recall high precision -> a group of users have unique music taste (easily identifiable) and the model can only that particular group of users in the small countries
+    <br/>
+    Conclusion:<br/>
+      1. Tail reigions have very low recalls and still very high accuracy -> they are ignored and because of their small size, accuracy got dominated by the true negatives.<br/>
+      2. For most small regions, they have a low recall high precision -> a group of users have unique music taste (easily identifiable) and the model can only that particular group of users in the small countries<br/>
 
   - When I was developing the model, I was just focusing on accuracy and top-k accuracy. They did very good for the region layer (~90% for each region), so I carried on to the next step without careful examination. Now that I added metrics like recall and f1, they look pretty bad for small regions. **I should've done that before carrying on.
   - Also, the fact that the two layer version resulted in very similar accuracy as the flat lightGBM shows that it already captured regional characteristics, making the extra layer redundant.
-![layer2 metrics](https://github.com/ytrqua3/music-prefernce-country-classification/blob/06fcca7588ba7b58b81304e28b0322a70ee7b74b/layer2_metrics.PNG)
-      Conclusion: 1. The model performs better as the CE(cross entropy) decreases. Meaning that regions with more disperse users have similar taste across the region.
-                  2. The recall for each region is at least 0.4, showing that small countries are not completey ignored. (Anglo Europe, Central&Eastern Europe, Balkans, Anglo-america, Latin America, Oceania are regions with dominant country but the recall is still good)
+    | Region                   | Cross Entropy | Effective Classes | Train Acc | Train Prec | Train Rec | Train F1 | Train TopK | Val Acc  | Val Prec | Val Rec  | Val F1   | Val TopK |
+    | ------------------------ | ------------- | ----------------- | --------- | ---------- | --------- | -------- | ---------- | -------- | -------- | -------- | -------- | -------- |
+    | Africa                   | 2.960907      | 5.811554          | 0.448083  | 0.668985   | 0.181254  | 0.170543 | 0.785144   | 0.430303 | 0.125391 | 0.160963 | 0.125511 | 0.690909 |
+    | East Asia                | 2.692764      | 4.116009          | 0.658982  | 0.784769   | 0.406175  | 0.480654 | 0.935633   | 0.496914 | 0.212591 | 0.181096 | 0.180247 | 0.731481 |
+    | West Asia                | 3.053301      | 5.929560          | 0.758012  | 0.890823   | 0.516358  | 0.621950 | 0.955452   | 0.610317 | 0.226298 | 0.210517 | 0.212880 | 0.826190 |
+    | Nordics                  | 1.917101      | 3.316114          | 0.799127  | 0.891092   | 0.648951  | 0.716483 | 0.989882   | 0.579929 | 0.348970 | 0.335584 | 0.313519 | 0.896980 |
+    | Western Core / DACH      | 2.120414      | 3.479939          | 0.724018  | 0.890680   | 0.530935  | 0.612482 | 0.978378   | 0.532473 | 0.274998 | 0.227689 | 0.220476 | 0.861111 |
+    | Anglo-Europe             | 0.332703      | 1.130119          | 0.938670  | 0.469335   | 0.500000  | 0.484182 | 1.000000   | 0.936473 | 0.468237 | 0.500000 | 0.483597 | 1.000000 |
+    | Southern Europe          | 2.007283      | 3.576967          | 0.834153  | 0.917352   | 0.680497  | 0.761887 | 0.984891   | 0.586895 | 0.314577 | 0.290619 | 0.288420 | 0.905983 |
+    | Central & Eastern Europe | 2.397691      | 3.192067          | 0.738565  | 0.944253   | 0.473610  | 0.599212 | 0.985473   | 0.590048 | 0.375788 | 0.153169 | 0.156613 | 0.792602 |
+    | Balkans                  | 1.954688      | 2.378896          | 0.836341  | 0.956539   | 0.595196  | 0.721304 | 0.993690   | 0.676663 | 0.219463 | 0.149057 | 0.157666 | 0.856052 |
+    | Anglo-America            | 0.574772      | 1.267369          | 0.883820  | 0.983358   | 0.436193  | 0.549133 | 1.000000   | 0.879586 | 0.125655 | 0.142857 | 0.133705 | 0.996709 |
+    | Latin America            | 1.525788      | 1.768083          | 0.881900  | 0.966901   | 0.623508  | 0.747568 | 0.990205   | 0.825875 | 0.214704 | 0.127066 | 0.139374 | 0.923330 |
+    | Oceania                  | 1.000518      | 1.497208          | 0.803703  | 0.100463   | 0.125000  | 0.111396 | 0.997916   | 0.788610 | 0.098576 | 0.125000 | 0.110227 | 0.972008 |
+<br/>
+      Conclusion: 1. The model performs better as the CE(cross entropy) decreases. Meaning that regions with more disperse users have similar taste across the region.<br>
+                  2. The recall for each region is at least 0.4, showing that small countries are not completey ignored. (Anglo Europe, Central&Eastern Europe, Balkans, Anglo-america, Latin America, Oceania are regions with dominant country but the recall is still good)<br/>
                   3. The model is usually uncertain with the ranking but does not ignore tail countries.
     
 12 Feb: deploy the model as an endpoint
