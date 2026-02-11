@@ -27,22 +27,22 @@ Log of notes and learning:
 
 1-2 Feb: working on training and deploying LightGB on sagemaker
   - base model did not work very well
-training accuracy: 0.6598848248296058
-validation accuracy: 0.5045294648694082
-training accuracy for top 10 countries:0.6984821241437128
-validation accuracy for top 10 countries:0.6452061945362798
-training accuracy for tail 10 countries:0.9002217294900222
-validation accuracy for tail 10 countries: <mark>0.0</mark>
-top5 accuracy of training: 0.9347353750631271
-top5 accuracy of validaton: 0.7419294586433397
-train Macro recall: 0.7685098271292383
-validation Macro recall: <mark> 0.07325228841703592</mark>
-train Macro precision: 0.957286232098812
-validation Macro precision: <mark>0.15461463815748647</mark>
-train Macro f1: 0.8311340806063884
-validation Macro f1: 0.0853215936831941
-train accuracy: 0.6598848248296058
-validation accuracy: 0.5045294648694082
+training accuracy: 0.6598848248296058 <br/>
+validation accuracy: 0.5045294648694082<br/>
+training accuracy for top 10 countries:0.6984821241437128<br/>
+validation accuracy for top 10 countries:0.6452061945362798<br/>
+training accuracy for tail 10 countries:0.9002217294900222<br/>
+validation accuracy for tail 10 countries: <mark>0.0</mark><br/>
+top5 accuracy of training: 0.9347353750631271<br/>
+top5 accuracy of validaton: 0.7419294586433397<br/>
+train Macro recall: 0.7685098271292383<br/>
+validation Macro recall: <mark> 0.07325228841703592</mark><br/>
+train Macro precision: 0.957286232098812<br/>
+validation Macro precision: <mark>0.15461463815748647</mark><br/>
+train Macro f1: 0.8311340806063884<br/>
+validation Macro f1: 0.0853215936831941<br/>
+train accuracy: 0.6598848248296058<br/>
+validation accuracy: 0.5045294648694082<br/>
   - Conclusion: The recall and tail country accuracy is exteremly low, meaning that the model completely ignored the tail countries.
                 The low precision also suggests that most countries get dominated by the top countries. Small countries are often ignored and misclassified.
                 The difference between training and validation accuracay also showed that the model tends to underfit in top countries and overfit in tail countries.
@@ -50,22 +50,22 @@ validation accuracy: 0.5045294648694082
   - Solution: 1. experimented on weights on lightgbm. But it didn't work as it exagerates the overfitting in rare categories and barely improve the recall
               2. Soft hierarchy: P(country | user) = P(country | user, region) * P(region | user). Expects to lower the recall by giving tail countries a chance to be captured by the model (increase its effective sample size)
   - results for applying weights to lightgbm
-training accuracy: 0.6389129217771897
-validation accuracy: 0.4809015347258973
-training accuracy for top 10 countries:0.6389143216440714
-validation accuracy for top 10 countries:0.595876109274404
-training accuracy for tail 10 countries:0.991130820399113
-validation accuracy for tail 10 countries:<mark>0.0</mark>
-top5 accuracy of training: 0.8896988298484558
-top5 accuracy of validaton: 0.7281698471500171
-train Macro recall: 0.8353119347987866
-validation Macro recall: <mark>0.0876825448523376</mark>
-train Macro precision: 0.8492974903657015
-validation Macro precision: <mark>0.1004111028582959</mark>
-train Macro f1: 0.8332193850073149
-validation Macro f1: 0.08817902302231734
-train accuracy: 0.6389129217771897
-validation accuracy: 0.4809015347258973
+training accuracy: 0.6389129217771897<br/>
+validation accuracy: 0.4809015347258973<br/>
+training accuracy for top 10 countries:0.6389143216440714<br/>
+validation accuracy for top 10 countries:0.595876109274404<br/>
+training accuracy for tail 10 countries:0.991130820399113<br/>
+validation accuracy for tail 10 countries:<mark>0.0</mark><br/>
+top5 accuracy of training: 0.8896988298484558<br/>
+top5 accuracy of validaton: 0.7281698471500171<br/>
+train Macro recall: 0.8353119347987866<br/>
+validation Macro recall: <mark>0.0876825448523376</mark><br/>
+train Macro precision: 0.8492974903657015<br/>
+validation Macro precision: <mark>0.1004111028582959</mark><br/>
+train Macro f1: 0.8332193850073149<br/>
+validation Macro f1: 0.08817902302231734<br/>
+train accuracy: 0.6389129217771897<br/>
+validation accuracy: 0.4809015347258973<br/>
     => By only applying weights is not enough to fix the extreme imbalance. Instead, it further exaggerated the problem of overfitting of tail countries.
 
 3-6 Feb: train a model with two layers (region and country)
