@@ -123,7 +123,7 @@ validation accuracy: 0.4809015347258973<br/>
     | Latin America            | 1.525788      | 1.768083          | 0.881900  | 0.966901   | 0.623508  | 0.747568 | 0.990205   | 0.825875 | 0.214704 | 0.127066 | 0.139374 | 0.923330 |
     | Oceania                  | 1.000518      | 1.497208          | 0.803703  | 0.100463   | 0.125000  | 0.111396 | 0.997916   | 0.788610 | 0.098576 | 0.125000 | 0.110227 | 0.972008 |
 <br/>
-      Conclusion: 1. The model performs better as the CE(cross entropy) decreases. Meaning that regions with more disperse users have similar taste across the region.<br>
+      Conclusion:<br/> 1. The model performs better as the CE(cross entropy) decreases. Meaning that regions with more disperse users have similar taste across the region.<br>
                   2. The recall for each region is at least 0.4, showing that small countries are not completey ignored. (Anglo Europe, Central&Eastern Europe, Balkans, Anglo-america, Latin America, Oceania are regions with dominant country but the recall is still good)<br/>
                   3. The model is usually uncertain with the ranking but does not ignore tail countries.
     
