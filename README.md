@@ -106,9 +106,7 @@ validation accuracy: 0.4809015347258973<br/>
       1. Tail reigions have very low recalls and still very high accuracy -> they are ignored and because of their small size, accuracy got dominated by the true negatives.<br/>
       2. For most small regions, they have a low recall high precision -> a group of users have unique music taste (easily identifiable) and the model can only that particular group of users in the small countries<br/>
 
-  - When I was developing the model, I was just focusing on accuracy and top-k accuracy. They did very good for the region layer (~90% for each region), so I carried on to the next step without careful examination. Now that I added metrics like recall and f1, they look pretty bad for small regions. **I should've done that before carrying on.
-  - Also, the fact that the two layer version resulted in very similar accuracy as the flat lightGBM shows that it already captured regional characteristics, making the extra layer redundant.
-    | Region                   | Cross Entropy | Effective Classes | Train Acc | Train Prec | Train Rec | Train F1 | Train TopK | Val Acc  | Val Prec | Val Rec  | Val F1   | Val TopK |
+    | Region                   |       Entropy | Effective Classes | Train Acc | Train Prec | Train Rec | Train F1 | Train TopK | Val Acc  | Val Prec | Val Rec  | Val F1   | Val TopK |
     | ------------------------ | ------------- | ----------------- | --------- | ---------- | --------- | -------- | ---------- | -------- | -------- | -------- | -------- | -------- |
     | Africa                   | 2.960907      | 5.811554          | 0.448083  | 0.668985   | 0.181254  | 0.170543 | 0.785144   | 0.430303 | 0.125391 | 0.160963 | 0.125511 | 0.690909 |
     | East Asia                | 2.692764      | 4.116009          | 0.658982  | 0.784769   | 0.406175  | 0.480654 | 0.935633   | 0.496914 | 0.212591 | 0.181096 | 0.180247 | 0.731481 |
@@ -123,9 +121,11 @@ validation accuracy: 0.4809015347258973<br/>
     | Latin America            | 1.525788      | 1.768083          | 0.881900  | 0.966901   | 0.623508  | 0.747568 | 0.990205   | 0.825875 | 0.214704 | 0.127066 | 0.139374 | 0.923330 |
     | Oceania                  | 1.000518      | 1.497208          | 0.803703  | 0.100463   | 0.125000  | 0.111396 | 0.997916   | 0.788610 | 0.098576 | 0.125000 | 0.110227 | 0.972008 |
 <br/>
-      Conclusion:<br/> 1. The model performs better as the CE(cross entropy) decreases. Meaning that regions with more disperse users have similar taste across the region.<br>
-                  2. The recall for each region is at least 0.4, showing that small countries are not completey ignored. (Anglo Europe, Central&Eastern Europe, Balkans, Anglo-america, Latin America, Oceania are regions with dominant country but the recall is still good)<br/>
-                  3. The model is usually uncertain with the ranking but does not ignore tail countries.
+      Conclusion:<br/> 1. The validation recall is at least 0.12 which is higher than macro recall of flat lightgbm -> this layer does provide a better classification <br/>
+                      2. The imbalance within region is still huge (low recall and decent accuracy) <br/>
+                      3. Add top k accuracy: if high-> the model does learn but tail county got dominated, if low -> the model did not learn at all
+
+  - When I was developing the model, I was just focusing on accuracy and top-k accuracy. They did very good for the region layer (~90% for each region), so I carried on to the next step without careful examination. Now that I added metrics like recall and f1, they look pretty bad for small regions. **I should've done that before carrying on.
     
 12 Feb: deploy the model as an endpoint
 
