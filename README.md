@@ -84,9 +84,10 @@ validation accuracy: 0.4809015347258973<br/>
         -> top5 accuracy of validaton: 0.7176110833749376<br/>
   - the result is similar to that of base lightgbm. but need a deeper dive into the metrics to find possible improvements.
 
-9-10 Feb: clean up metrics and evaluate the model
-  - Because the metrics are slightly lower than flat lightGBM (not what I expected), I spent more time on evaluating the process
-  - metrics for first layer:
+9-10 Feb: clean up metrics and evaluate the model<br/>
+  - Because the metrics are slightly lower than flat lightGBM (not what I expected), I spent more time on evaluating the process<br/>
+  - metrics for first layer:<br/>
+    
     | Region                   | Users (True) | Users (Pred) | Train Acc | Train Prec | Train Rec | Train F1 | Train Top3 Rec | Val Acc | Val Prec | Val Rec | Val F1 | Val Top3 Rec |
     | ------------------------ | ------------ | ------------ | --------- | ---------- | --------- | -------- | -------------- | ------- | -------- | ------- | ------ | ------------ |
     | Africa                   | 1252         | 332          | 0.996     | 0.967      | 0.256     | 0.405    | 0.595          | 0.995   | 0.600    | 0.036   | 0.069  | 0.079        |
