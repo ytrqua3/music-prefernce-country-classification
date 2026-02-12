@@ -141,8 +141,8 @@ validation accuracy: 0.4809015347258973<br/>
   - Next step: apply weights to both layers (expect to have a lower accuracy in individual models but higher recall)
 
 
-11 Feb: improving the model
-#region-level model
+11 Feb: improving the model <br/>
+  - region-level model
  Possible Solutions for problems found yesterday: <br/>
        1. Apply weights (training recall is also low for small regions, the model is not picking up patterns about them, so adding variance might work)<br/>
        2. I came across a 'focal loss' metric for the model to learn (it focuses more on minority examples), but it seems to be very hard to implement <br/>
