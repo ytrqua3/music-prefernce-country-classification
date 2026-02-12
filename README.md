@@ -77,12 +77,10 @@ validation accuracy: 0.4809015347258973<br/>
   - I am currently calculating the probability array user by user which takes a lot of time. I should batch it per region.
   - Completed the calculation that combine the weighted probabilities.
   - Overall result:
-        -> validation accuracy: 0.5003432351472791
-        -> validation accuracy for top 10 countries:0.6451626935792587
-        -> validation accuracy for tail 10 countries:0.0
-        -> top5 accuracy of validaton: 0.7176110833749376
-        -> validation recall: 0.1
-        -> validation precision: 0.1
+        -> validation accuracy: 0.5003432351472791<br/>
+        -> validation accuracy for top 10 countries:0.6451626935792587<br/>
+        -> validation accuracy for tail 10 countries:0.0<br/>
+        -> top5 accuracy of validaton: 0.7176110833749376<br/>
   - the result is similar to that of base lightgbm.
 
 9-10 Feb: clean up metrics and evaluate the model
