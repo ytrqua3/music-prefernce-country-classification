@@ -116,7 +116,7 @@ validation accuracy: 0.4809015347258973<br/>
         1. apply weights (possibly improve the top3 recall by having decision boundries not ignoring small regions wc​=min(5,sqrt(N / (K*nc)​) -> smaller class size larger weight (with cap and sqrt so it dont go crazy)<br/>
         2. apply temperature scaling to flatten out the probabilities, giving small regions a better chance in the following stage.<br/>
 
-    Comparing performance of weighted and unweighted region model:<br/>
+      - Comparing performance of weighted and unweighted region model:
 
     | Region                   | Baseline Val Top3 Rec | Weighted Val Top3 Rec | Δ (Weighted − Base) |
     | ------------------------ | --------------------- | --------------------- | ------------------- |
@@ -133,6 +133,7 @@ validation accuracy: 0.4809015347258973<br/>
     | Southern Europe          | 0.416                 | 0.5413                | **+0.1253**         |
     | West Asia                | 0.460                 | 0.5437                | **+0.0837**         |
     | Western Core / DACH      | 0.660                 | 0.6631                | **+0.0031**         |
+    
     <br/>
     The weighted model definitely helped with recall by sacrificing some recall of the dominant regions.
 
@@ -152,6 +153,7 @@ validation accuracy: 0.4809015347258973<br/>
     | Anglo-America            | 0.574772      | 1.267369          | 0.883820  | 0.983358   | 0.436193  | 0.549133 | 1.000000   | 0.879586 | 0.125655 | 0.142857 | 0.133705 | 0.996709 |
     | Latin America            | 1.525788      | 1.768083          | 0.881900  | 0.966901   | 0.623508  | 0.747568 | 0.990205   | 0.825875 | 0.214704 | 0.127066 | 0.139374 | 0.923330 |
     | Oceania                  | 1.000518      | 1.497208          | 0.803703  | 0.100463   | 0.125000  | 0.111396 | 0.997916   | 0.788610 | 0.098576 | 0.125000 | 0.110227 | 0.972008 |
+    
 <br/>
       Conclusion:<br/> 1. The validation recall is at least 0.12 which is higher than macro recall of flat lightgbm -> this layer does provide a better classification <br/>
                       2. The imbalance within region is still huge (low recall and decent accuracy) <br/>
