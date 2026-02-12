@@ -142,25 +142,29 @@ validation accuracy: 0.4809015347258973<br/>
 
     
 
-    | Region                   |       Entropy | Effective Classes | Train Acc | Train Prec | Train Rec | Train F1 | Train TopK | Val Acc  | Val Prec | Val Rec  | Val F1   | Val TopK |
-    | ------------------------ | ------------- | ----------------- | --------- | ---------- | --------- | -------- | ---------- | -------- | -------- | -------- | -------- | -------- |
-    | Africa                   | 2.960907      | 5.811554          | 0.448083  | 0.668985   | 0.181254  | 0.170543 | 0.785144   | 0.430303 | 0.125391 | 0.160963 | 0.125511 | 0.690909 |
-    | East Asia                | 2.692764      | 4.116009          | 0.658982  | 0.784769   | 0.406175  | 0.480654 | 0.935633   | 0.496914 | 0.212591 | 0.181096 | 0.180247 | 0.731481 |
-    | West Asia                | 3.053301      | 5.929560          | 0.758012  | 0.890823   | 0.516358  | 0.621950 | 0.955452   | 0.610317 | 0.226298 | 0.210517 | 0.212880 | 0.826190 |
-    | Nordics                  | 1.917101      | 3.316114          | 0.799127  | 0.891092   | 0.648951  | 0.716483 | 0.989882   | 0.579929 | 0.348970 | 0.335584 | 0.313519 | 0.896980 |
-    | Western Core / DACH      | 2.120414      | 3.479939          | 0.724018  | 0.890680   | 0.530935  | 0.612482 | 0.978378   | 0.532473 | 0.274998 | 0.227689 | 0.220476 | 0.861111 |
-    | Anglo-Europe             | 0.332703      | 1.130119          | 0.938670  | 0.469335   | 0.500000  | 0.484182 | 1.000000   | 0.936473 | 0.468237 | 0.500000 | 0.483597 | 1.000000 |
-    | Southern Europe          | 2.007283      | 3.576967          | 0.834153  | 0.917352   | 0.680497  | 0.761887 | 0.984891   | 0.586895 | 0.314577 | 0.290619 | 0.288420 | 0.905983 |
-    | Central & Eastern Europe | 2.397691      | 3.192067          | 0.738565  | 0.944253   | 0.473610  | 0.599212 | 0.985473   | 0.590048 | 0.375788 | 0.153169 | 0.156613 | 0.792602 |
-    | Balkans                  | 1.954688      | 2.378896          | 0.836341  | 0.956539   | 0.595196  | 0.721304 | 0.993690   | 0.676663 | 0.219463 | 0.149057 | 0.157666 | 0.856052 |
-    | Anglo-America            | 0.574772      | 1.267369          | 0.883820  | 0.983358   | 0.436193  | 0.549133 | 1.000000   | 0.879586 | 0.125655 | 0.142857 | 0.133705 | 0.996709 |
-    | Latin America            | 1.525788      | 1.768083          | 0.881900  | 0.966901   | 0.623508  | 0.747568 | 0.990205   | 0.825875 | 0.214704 | 0.127066 | 0.139374 | 0.923330 |
-    | Oceania                  | 1.000518      | 1.497208          | 0.803703  | 0.100463   | 0.125000  | 0.111396 | 0.997916   | 0.788610 | 0.098576 | 0.125000 | 0.110227 | 0.972008 |
-    
+## Region-Level Country Classification Performance
+
+| Region                   | Entropy  | Effective Classes | Train Acc | Train Prec | Train Rec | Train F1 | Train TopK | Val Acc  | Val Prec | Val Rec  | Val F1   | Val TopK |
+|--------------------------|----------|------------------|-----------|------------|-----------|----------|------------|----------|----------|----------|----------|----------|
+| Africa                   | 2.9609   | 5.8116           | 0.4481    | 0.6690     | 0.1813    | 0.1705   | 0.7851     | 0.4303   | 0.1254   | 0.1610   | 0.1255   | 0.6909   |
+| East Asia                | 2.6928   | 4.1160           | 0.6590    | 0.7848     | 0.4062    | 0.4807   | 0.9356     | 0.4969   | 0.2126   | 0.1811   | 0.1802   | 0.7315   |
+| West Asia                | 3.0533   | 5.9296           | 0.7580    | 0.8908     | 0.5164    | 0.6220   | 0.9555     | 0.6103   | 0.2263   | 0.2105   | 0.2129   | 0.8262   |
+| Nordics                  | 1.9171   | 3.3161           | 0.7991    | 0.8911     | 0.6490    | 0.7165   | 0.9899     | 0.5799   | 0.3490   | 0.3356   | 0.3135   | 0.8970   |
+| Western Core / DACH      | 2.1204   | 3.4799           | 0.7240    | 0.8907     | 0.5309    | 0.6125   | 0.9784     | 0.5325   | 0.2750   | 0.2277   | 0.2205   | 0.8611   |
+| Anglo-Europe             | 0.3327   | 1.1301           | 0.9387    | 0.4693     | 0.5000    | 0.4842   | 1.0000     | 0.9365   | 0.4682   | 0.5000   | 0.4836   | 1.0000   |
+| Southern Europe          | 2.0073   | 3.5770           | 0.8342    | 0.9174     | 0.6805    | 0.7619   | 0.9849     | 0.5869   | 0.3146   | 0.2906   | 0.2884   | 0.9060   |
+| Central & Eastern Europe | 2.3977   | 3.1921           | 0.7386    | 0.9443     | 0.4736    | 0.5992   | 0.9855     | 0.5900   | 0.3758   | 0.1532   | 0.1566   | 0.7926   |
+| Balkans                  | 1.9547   | 2.3789           | 0.8363    | 0.9565     | 0.5952    | 0.7213   | 0.9937     | 0.6767   | 0.2195   | 0.1491   | 0.1577   | 0.8561   |
+| Anglo-America            | 0.5748   | 1.2674           | 0.8838    | 0.9834     | 0.4362    | 0.5491   | 1.0000     | 0.8796   | 0.1257   | 0.1429   | 0.1337   | 0.9967   |
+| Latin America            | 1.5258   | 1.7681           | 0.8819    | 0.9669     | 0.6235    | 0.7476   | 0.9902     | 0.8259   | 0.2147   | 0.1271   | 0.1394   | 0.9233   |
+| Oceania                  | 1.0005   | 1.4972           | 0.8037    | 0.1005     | 0.1250    | 0.1114   | 0.9979     | 0.7886   | 0.0986   | 0.1250   | 0.1102   | 0.9720   |
+
 <br/>
       Conclusion:<br/> 1. The validation recall is at least 0.12 which is higher than macro recall of flat lightgbm -> this layer does provide a better classification <br/>
                       2. The imbalance within region is still huge (low recall and decent accuracy) <br/>
                       3. Add top k accuracy: if high-> the model does learn but tail county got dominated, if low -> the model did not learn at all
+                      4. high entropy represents more evenly distributed countries within region, which usually leads to more confusion shown by the low accuracy
+                      5. low entropy represents an imbalance within the region, which usually leads to a high accuracy but low recall
 
   - When I was developing the model, I was just focusing on accuracy and top-k accuracy. They did very good for the region layer (~90% for each region), so I carried on to the next step without careful examination. Now that I added metrics like recall and f1, they look pretty bad for small regions. **I should've done that before carrying on.
   - Next step: apply weights to both layers (expect to have a lower accuracy in individual models but higher recall)
