@@ -45,7 +45,7 @@ train accuracy: 0.6598848248296058<br/>
 validation accuracy: 0.5045294648694082<br/>
   - Conclusion: The recall and tail country accuracy is exteremly low, meaning that the model completely ignored the tail countries.<br/>
                 The low precision also suggests that most countries get dominated by the top countries. Small countries are often ignored and misclassified.<br/>
-                The difference between training and validation accuracay also showed that the model tends to underfit in top countries and overfit in tail countries.<br/>
+                The difference between training and validation recall, precision, accuracy also showed that the model tends to overfit in tail countries.<br/>
                 As a result, simply doing methods like oversampling minorities or other methods like SMOTE will not work.<br/>
                 Although underfitting in top countries cost some accuracy, the main problem is the <b>extreme imbalance</b> in classes<br/>
   - Solutions for class imbalance: 1. experimented on weights on lightgbm. But it didn't work as it exagerates the overfitting in rare categories and barely improve the recall<br/>
@@ -84,7 +84,7 @@ validation accuracy: 0.4809015347258973<br/>
         -> top5 accuracy of validaton: 0.7176110833749376<br/>
   - the result is similar to that of base lightgbm. but need a deeper dive into the metrics to find possible improvements.
 
-9-10 Feb: clean up metrics and evaluate the model
+9-11 Feb: clean up metrics and evaluate the model
   - Because the metrics are slightly lower than flat lightGBM (not what I expected), I spent more time on evaluating the process
   - metrics for first layer:
     | Region                   | Users (True) | Users (Pred) | Train Acc | Train Prec | Train Rec | Train F1 | Train Top3 Rec | Val Acc | Val Prec | Val Rec | Val F1 | Val Top3 Rec |
@@ -104,8 +104,18 @@ validation accuracy: 0.4809015347258973<br/>
     | Western Core / DACH      | 19610        | 13557        | 0.928     | 0.549      | 0.380     | 0.449    | 0.768          | 0.913   | 0.437    | 0.300   | 0.356  | 0.660        |
     <br/>
     Conclusion:<br/>
-      1. Tail reigions have very low recalls and still very high accuracy -> they are ignored and because of their small size, accuracy got dominated by the true negatives.<br/>
-      2. For most small regions, they have a low recall high precision -> a group of users have unique music taste (easily identifiable) and the model can only that particular group of users in the small countries<br/>
+      1. In this case, accuracy doesn't mean anything. The aim is to get a high top3 recall so the target country has a chance of standing out in the next stage.<br/>
+      2. When the number of users in the region get under 10000 the top3 recall gets bad as signals are weak and get surpressed by larger regions.<br/>
+      3. For small regions, the model results in a high precision low recall. This means that it is very selective on those regions.<br/>
+      4. It seems like that regions have high overlap (which make sense as mainstream music has large global influence)<br/>
+   Possible Solutions: <br/>
+       1. Apply weights (training recall is also low for small regions, the model is not picking up patterns about them, so adding variance might work)
+       2. I came across a 'focal loss' metric for the model to learn (it focuses more on minority examples), but it seems to be very hard to implement 
+       3. use SMOTE to try fighting the dominance of large regions (but it creates users linearly which might destroy the pattern as preference of a human is not necessarily linear)
+    Final ApproachL<br/>
+        1. apply weights (possibly improve the top3 recall by having decision boundries not ignoring small regions
+        2. apply temperature scaling to flatten out the probabilities, giving small regions a better chance in the following stage.
+    
 
     | Region                   |       Entropy | Effective Classes | Train Acc | Train Prec | Train Rec | Train F1 | Train TopK | Val Acc  | Val Prec | Val Rec  | Val F1   | Val TopK |
     | ------------------------ | ------------- | ----------------- | --------- | ---------- | --------- | -------- | ---------- | -------- | -------- | -------- | -------- | -------- |
