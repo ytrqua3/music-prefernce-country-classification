@@ -73,17 +73,16 @@ validation accuracy: 0.4809015347258973<br/>
 3-6 Feb: train a model with two layers (region and country)
   - The idea is to classify the users into regions first then country.
   - grouping the countries into regions according to continent and culture(my instinct)
-  - region model worked pretty well in locking in the top 3
   - adjusted hyperparameters based on average users per country in each region (low -> tend to overfit -> smaller tree for generalization)
   - country classifiers given region worked as expected
   - I am currently calculating the probability array user by user which takes a lot of time. I should batch it per region.
-  - Completed the calculation that combine the weighted probabilities.
+  - Completed the calculation that combine the weighted probabilities by having an initial matrix of probabilities and add probabilities to it from the country model.
   - Overall result:
         -> validation accuracy: 0.5003432351472791<br/>
         -> validation accuracy for top 10 countries:0.6451626935792587<br/>
         -> validation accuracy for tail 10 countries:0.0<br/>
         -> top5 accuracy of validaton: 0.7176110833749376<br/>
-  - the result is similar to that of base lightgbm.
+  - the result is similar to that of base lightgbm. but need a deeper dive into the metrics to find possible improvements.
 
 9-10 Feb: clean up metrics and evaluate the model
   - Because the metrics are slightly lower than flat lightGBM (not what I expected), I spent more time on evaluating the process
