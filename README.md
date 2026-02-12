@@ -121,7 +121,7 @@ validation accuracy: 0.4809015347258973<br/>
 | East Asia                | 2.6928   | 4.1160           | 0.6590    | 0.7848     | 0.4062    | 0.4807   | 0.9356     | 0.4969   | 0.2126   | 0.1811   | 0.1802   | 0.7315   |
 | West Asia                | 3.0533   | 5.9296           | 0.7580    | 0.8908     | 0.5164    | 0.6220   | 0.9555     | 0.6103   | 0.2263   | 0.2105   | 0.2129   | 0.8262   |
 | Nordics                  | 1.9171   | 3.3161           | 0.7991    | 0.8911     | 0.6490    | 0.7165   | 0.9899     | 0.5799   | 0.3490   | 0.3356   | 0.3135   | 0.8970   |
-| Western Core / DACH      | 2.1204   | 3.4799           | 0.7240    | 0.8907     | 0.5309    | 0.6125   | 0.9784     | 0.5325   | 0.2750   | 0.2277   | 0.2205   | 0.8611   |
+| Western Core / DACH      | 2.1204   | 3.4799           | 0.7240    | 0.8907     | 0.5309    | 0.6125   | 0.9784     | 0.5325   | 0.2750   | 0.2277   | 0.2205   | 0.8611  
 | Anglo-Europe             | 0.3327   | 1.1301           | 0.9387    | 0.4693     | 0.5000    | 0.4842   | 1.0000     | 0.9365   | 0.4682   | 0.5000   | 0.4836   | 1.0000   |
 | Southern Europe          | 2.0073   | 3.5770           | 0.8342    | 0.9174     | 0.6805    | 0.7619   | 0.9849     | 0.5869   | 0.3146   | 0.2906   | 0.2884   | 0.9060   |
 | Central & Eastern Europe | 2.3977   | 3.1921           | 0.7386    | 0.9443     | 0.4736    | 0.5992   | 0.9855     | 0.5900   | 0.3758   | 0.1532   | 0.1566   | 0.7926   |
@@ -133,9 +133,11 @@ validation accuracy: 0.4809015347258973<br/>
 <br/>
       Conclusion:<br/> 1. The validation recall is at least 0.12 which is higher than macro recall of flat lightgbm -> this layer does provide a better classification <br/>
                       2. The imbalance within region is still huge (low recall and decent accuracy) <br/>
-                      3. Add top k accuracy: if high-> the model does learn but tail county got dominated, if low -> the model did not learn at all
-                      4. high entropy represents more evenly distributed countries within region, which usually leads to more confusion shown by the low accuracy
-                      5. low entropy represents an imbalance within the region, which usually leads to a high accuracy but low recall
+                      3. Add top k accuracy: if high-> the model does learn but tail county got dominated, if low -> the model did not learn at all<br/>
+                      4. high entropy represents more evenly distributed countries within region, which usually leads to more confusion shown by the low accuracy<br/>
+                      5. low entropy represents an imbalance within the region, which usually leads to a high accuracy but low recall<br/>
+                      6. Two main problems are overfitting (moderate training recall and bad validation recall) and ignoring minorities
+        
 
   - When I was developing the model, I was just focusing on accuracy and top-k accuracy. They did very good for the region layer (~90% for each region), so I carried on to the next step without careful examination. Now that I added metrics like recall and f1, they look pretty bad for small regions. **I should've done that before carrying on.
   - Next step: apply weights to both layers (expect to have a lower accuracy in individual models but higher recall)
@@ -151,7 +153,7 @@ validation accuracy: 0.4809015347258973<br/>
         1. apply weights (possibly improve the top3 recall by having decision boundries not ignoring small regions wc​=min(5,sqrt(N / (K*nc)​) -> smaller class size larger weight (with cap and sqrt so it dont go crazy)<br/>
         2. apply temperature scaling to flatten out the probabilities, giving small regions a better chance in the following stage.<br/>
 
-      - Comparing performance of weighted and unweighted region model:
+  - Comparing performance of weighted and unweighted region model:
 
 ## Region-Level Validation Top-3 Recall Comparison
 
@@ -172,12 +174,19 @@ validation accuracy: 0.4809015347258973<br/>
 | Western Core / DACH      | 0.660                 | 0.6631                 | +0.0031              |
 
     
-    <br/>
-    The weighted model definitely helped with recall by sacrificing some recall of the dominant regions.
+    The weighted model definitely helped with recall by sacrificing some recall of the dominant regions.<br/>
 
-15 Feb: deploy the model as an endpoint (although two methods result in similar result, I deploy the two layer model to challenge myself)
+  - country-level classifier
+      -> Solutions: <br/>
+            1. use weights to force the model to look at minorities
+            2. use oversampling (risk of sevre overfitting, but the sample size for certain countries is so small that it might help. also, only apply to regions with high entropy as the struggle with finding pattern.<br/>
+            3. to solve overfittng, increase the l2 penalty and decrease the num_leaves of lightgbm
 
-16 Feb: finalize aws glue for embeddings and connect with endpoint
+    
+Next Stages:<br/>
+ Feb: deploy the model as an endpoint (although two methods result in similar result, I deploy the two layer model to challenge myself)<br/>
+
+ Feb: finalize aws glue for embeddings and connect with endpoint<br/>
 
 
     
