@@ -118,21 +118,24 @@ validation accuracy: 0.4809015347258973<br/>
 
       - Comparing performance of weighted and unweighted region model:
 
-    | Region                   | Baseline Val Top3 Rec | Weighted Val Top3 Rec | Δ (Weighted − Base) |
-    | ------------------------ | --------------------- | --------------------- | ------------------- |
-    | Africa                   | 0.079                 | 0.1091                | **+0.0301**         |
-    | Anglo-America            | 0.969                 | 0.9153                | **−0.0537**         |
-    | Anglo-Europe             | 0.773                 | 0.7280                | **−0.0450**         |
-    | Antarctica               | 0.000                 | 0.0133                | **+0.0133**         |
-    | Balkans                  | 0.643                 | 0.7012                | **+0.0582**         |
-    | Central & Eastern Europe | 0.725                 | 0.7398                | **+0.0148**         |
-    | East Asia                | 0.363                 | 0.4923                | **+0.1293**         |
-    | Latin America            | 0.959                 | 0.8997                | **−0.0593**         |
-    | Nordics                  | 0.380                 | 0.5195                | **+0.1395**         |
-    | Oceania                  | 0.226                 | 0.4759                | **+0.2499**         |
-    | Southern Europe          | 0.416                 | 0.5413                | **+0.1253**         |
-    | West Asia                | 0.460                 | 0.5437                | **+0.0837**         |
-    | Western Core / DACH      | 0.660                 | 0.6631                | **+0.0031**         |
+## Region-Level Validation Top-3 Recall Comparison
+
+| Region                   | Baseline Val Top3 Rec | Weighted Val Top3 Rec | Δ (Weighted − Base) |
+|--------------------------|-----------------------|------------------------|----------------------|
+| Africa                   | 0.079                 | 0.1091                 | +0.0301              |
+| Anglo-America            | 0.969                 | 0.9153                 | -0.0537              |
+| Anglo-Europe             | 0.773                 | 0.7280                 | -0.0450              |
+| Antarctica               | 0.000                 | 0.0133                 | +0.0133              |
+| Balkans                  | 0.643                 | 0.7012                 | +0.0582              |
+| Central & Eastern Europe | 0.725                 | 0.7398                 | +0.0148              |
+| East Asia                | 0.363                 | 0.4923                 | +0.1293              |
+| Latin America            | 0.959                 | 0.8997                 | -0.0593              |
+| Nordics                  | 0.380                 | 0.5195                 | +0.1395              |
+| Oceania                  | 0.226                 | 0.4759                 | +0.2499              |
+| Southern Europe          | 0.416                 | 0.5413                 | +0.1253              |
+| West Asia                | 0.460                 | 0.5437                 | +0.0837              |
+| Western Core / DACH      | 0.660                 | 0.6631                 | +0.0031              |
+
     
     <br/>
     The weighted model definitely helped with recall by sacrificing some recall of the dominant regions.
