@@ -109,12 +109,33 @@ validation accuracy: 0.4809015347258973<br/>
       3. For small regions, the model results in a high precision low recall. This means that it is very selective on those regions.<br/>
       4. It seems like that regions have high overlap (which make sense as mainstream music has large global influence)<br/>
    Possible Solutions: <br/>
-       1. Apply weights (training recall is also low for small regions, the model is not picking up patterns about them, so adding variance might work)
-       2. I came across a 'focal loss' metric for the model to learn (it focuses more on minority examples), but it seems to be very hard to implement 
-       3. use SMOTE to try fighting the dominance of large regions (but it creates users linearly which might destroy the pattern as preference of a human is not necessarily linear)
+       1. Apply weights (training recall is also low for small regions, the model is not picking up patterns about them, so adding variance might work)<br/>
+       2. I came across a 'focal loss' metric for the model to learn (it focuses more on minority examples), but it seems to be very hard to implement <br/>
+       3. use SMOTE to try fighting the dominance of large regions (but it creates users linearly which might destroy the pattern as preference of a human is not necessarily linear)<br/>
     Final ApproachL<br/>
-        1. apply weights (possibly improve the top3 recall by having decision boundries not ignoring small regions
-        2. apply temperature scaling to flatten out the probabilities, giving small regions a better chance in the following stage.
+        1. apply weights (possibly improve the top3 recall by having decision boundries not ignoring small regions wc​=min(5,sqrt(N / (K*nc)​) -> smaller class size larger weight (with cap and sqrt so it dont go crazy)<br/>
+        2. apply temperature scaling to flatten out the probabilities, giving small regions a better chance in the following stage.<br/>
+
+    Comparing performance of weighted and unweighted region model:<br/>
+
+    | Region                   | Baseline Val Top3 Rec | Weighted Val Top3 Rec | Δ (Weighted − Base) |
+    | ------------------------ | --------------------- | --------------------- | ------------------- |
+    | Africa                   | 0.079                 | 0.1091                | **+0.0301**         |
+    | Anglo-America            | 0.969                 | 0.9153                | **−0.0537**         |
+    | Anglo-Europe             | 0.773                 | 0.7280                | **−0.0450**         |
+    | Antarctica               | 0.000                 | 0.0133                | **+0.0133**         |
+    | Balkans                  | 0.643                 | 0.7012                | **+0.0582**         |
+    | Central & Eastern Europe | 0.725                 | 0.7398                | **+0.0148**         |
+    | East Asia                | 0.363                 | 0.4923                | **+0.1293**         |
+    | Latin America            | 0.959                 | 0.8997                | **−0.0593**         |
+    | Nordics                  | 0.380                 | 0.5195                | **+0.1395**         |
+    | Oceania                  | 0.226                 | 0.4759                | **+0.2499**         |
+    | Southern Europe          | 0.416                 | 0.5413                | **+0.1253**         |
+    | West Asia                | 0.460                 | 0.5437                | **+0.0837**         |
+    | Western Core / DACH      | 0.660                 | 0.6631                | **+0.0031**         |
+    <br/>
+    The weighted model definitely helped with recall by sacrificing some recall of the dominant regions.
+
     
 
     | Region                   |       Entropy | Effective Classes | Train Acc | Train Prec | Train Rec | Train F1 | Train TopK | Val Acc  | Val Prec | Val Rec  | Val F1   | Val TopK |
