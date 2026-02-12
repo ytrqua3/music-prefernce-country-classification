@@ -43,11 +43,13 @@ train Macro f1: 0.8311340806063884<br/>
 validation Macro f1: 0.0853215936831941<br/>
 train accuracy: 0.6598848248296058<br/>
 validation accuracy: 0.5045294648694082<br/>
-  - Conclusion: The recall and tail country accuracy is exteremly low, meaning that the model completely ignored the tail countries.
-                The low precision also suggests that most countries get dominated by the top countries. Small countries are often ignored and misclassified.
-                The difference between training and validation accuracay also showed that the model tends to underfit in top countries and overfit in tail countries.
-                Although overfitting and underfitting cost some accuracy, the main problem is the <b>extreme imbalance</b> in classes
-  - Solution: 1. experimented on weights on lightgbm. But it didn't work as it exagerates the overfitting in rare categories and barely improve the recall
+  - Conclusion: The recall and tail country accuracy is exteremly low, meaning that the model completely ignored the tail countries.<br/>
+                The low precision also suggests that most countries get dominated by the top countries. Small countries are often ignored and misclassified.<br/>
+                The difference between training and validation accuracay also showed that the model tends to underfit in top countries and overfit in tail countries.<br/>
+                As a result, simply doing methods like oversampling minorities or other methods like SMOTE will not work.<br/>
+                Although underfitting in top countries cost some accuracy, the main problem is the <b>extreme imbalance</b> in classes<br/>
+  - Solutions for class imbalance: 1. experimented on weights on lightgbm. But it didn't work as it exagerates the overfitting in rare categories and barely improve the recall<br/>
+      *weights are applied on loss function when lightgbm develops a tree, making the model more "focused" on minorities, but because the imbalance is too extreme, it causes more overfitting and has limited benefits to validation metrics<br/>
               2. Soft hierarchy: P(country | user) = P(country | user, region) * P(region | user). Expects to lower the recall by giving tail countries a chance to be captured by the model (increase its effective sample size)
   - results for applying weights to lightgbm
 training accuracy: 0.6389129217771897<br/>
