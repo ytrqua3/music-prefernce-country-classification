@@ -25,7 +25,7 @@ Log of notes and learning:
   - tried to apply LightGB but could not figure out how to train one
   - final: completed the logistic regression as a baseline and went on a side track to taking a crash course on sagemaker
 
-1-2 Feb: working on training and deploying LightGB on sagemaker
+1-2 Feb: working on training LightGB on sagemaker
   - base model did not work very well
 training accuracy: 0.6598848248296058 <br/>
 validation accuracy: 0.5045294648694082<br/>
@@ -68,7 +68,7 @@ train Macro f1: 0.8332193850073149<br/>
 validation Macro f1: 0.08817902302231734<br/>
 train accuracy: 0.6389129217771897<br/>
 validation accuracy: 0.4809015347258973<br/>
-    => By only applying weights is not enough to fix the extreme imbalance. Instead, it further exaggerated the problem of overfitting of tail countries.
+    => By only applying weights is not enough to fix the extreme imbalance. Instead, it further exaggerated the problem of overfitting.
 
 3-6 Feb: train a model with two layers (region and country)
   - The idea is to classify the users into regions first then country.
@@ -85,6 +85,7 @@ validation accuracy: 0.4809015347258973<br/>
   - the result is similar to that of base lightgbm. but need a deeper dive into the metrics to find possible improvements.
 
 9-10 Feb: clean up metrics and evaluate the model<br/>
+  ***main goal to optimize
   - Because the metrics are slightly lower than flat lightGBM (not what I expected), I spent more time on evaluating the process<br/>
   - metrics for first layer:<br/>
     
@@ -105,13 +106,11 @@ validation accuracy: 0.4809015347258973<br/>
     | Western Core / DACH      | 19610        | 13557        | 0.928     | 0.549      | 0.380     | 0.449    | 0.768          | 0.913   | 0.437    | 0.300   | 0.356  | 0.660        |
     <br/>
     Conclusion:<br/>
-      1. In this case, accuracy doesn't mean anything. The aim is to get a high top3 recall so the target country has a chance of standing out in the next stage.<br/>
+      1. In this case, accuracy is not as important. The aim is to get a high top3 recall so the target country has a chance of standing out in the next stage.<br/>
       2. When the number of users in the region get under 10000 the top3 recall gets bad as signals are weak and get surpressed by larger regions.<br/>
       3. For small regions, the model results in a high precision low recall. This means that it is very selective on those regions.<br/>
       4. It seems like that regions have high overlap (which make sense as mainstream music has large global influence)<br/>
-  
 
-    
 
 ## Region-Level Country Classification Performance
 
@@ -133,10 +132,11 @@ validation accuracy: 0.4809015347258973<br/>
 <br/>
       Conclusion:<br/> 1. The validation recall is at least 0.12 which is higher than macro recall of flat lightgbm -> this layer does provide a better classification <br/>
                       2. The imbalance within region is still huge (low recall and decent accuracy) <br/>
-                      3. Add top k accuracy: if high-> the model does learn but tail county got dominated, if low -> the model did not learn at all<br/>
+                      3. Add top k recall: if high-> the model does learn but tail county got dominated, if low -> the model did not learn at all<br/>
                       4. high entropy represents more evenly distributed countries within region, which usually leads to more confusion shown by the low accuracy<br/>
                       5. low entropy represents an imbalance within the region, which usually leads to a high accuracy but low recall<br/>
                       6. Two main problems are overfitting (moderate training recall and bad validation recall) and ignoring minorities
+                      7. Anglo-Europe and Oceania are only predicting the dominant country (recall = 1/num_countries)
         
 
   - When I was developing the model, I was just focusing on accuracy and top-k accuracy. They did very good for the region layer (~90% for each region), so I carried on to the next step without careful examination. Now that I added metrics like recall and f1, they look pretty bad for small regions. **I should've done that before carrying on.
@@ -178,9 +178,9 @@ validation accuracy: 0.4809015347258973<br/>
 
   - country-level classifier
       -> Solutions: <br/>
-            1. use weights to force the model to look at minorities
-            2. use oversampling (risk of sevre overfitting, but the sample size for certain countries is so small that it might help. also, only apply to regions with high entropy as the struggle with finding pattern.<br/>
-            3. to solve overfittng, increase the l2 penalty and decrease the num_leaves of lightgbm
+            1. use weights to force the model to look at minorities(for Africa, East Asia, Latin-America, Anglo-America, Anglo-Europe and Oceania apply inverse frequence, others apply log frequency which is less aggressive)(less aggressive on regions with moderate train recall->not collapsing  and overfitting)<br/>
+            2. use oversampling for Latin-America, Anglo-America, Anglo-Europe and Oceania (risk of overfitting, but since it is only predicting the dominant country, it might help the minorities without big tradeoff in overfitting)<br/>
+            3. to solve overfittng, increase the l2 penalty, min_data_in_leaf and decrease the num_leaves of lightgbm for regions that are overfitting<br/>
 
     
 Next Stages:<br/>
