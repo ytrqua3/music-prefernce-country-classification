@@ -44,9 +44,10 @@ validation Macro f1: 0.0853215936831941<br/>
 train accuracy: 0.6598848248296058<br/>
 validation accuracy: 0.5045294648694082<br/>
   - Conclusion: The recall and tail country accuracy is exteremly low, meaning that the model completely ignored the tail countries.<br/>
-                The low precision also suggests that most countries get dominated by the top countries. Small countries are often ignored and misclassified.<br/>
+                The low macro precision also suggests that most countries are often misclassified (assuming as dominant classes).<br/>
+                The low macro recall says a similar thing that smaller countries are not learnt by the model.
                 The difference between training and validation recall, precision, accuracy also showed that the model tends to overfit in tail countries.<br/>
-                As a result, simply doing methods like oversampling minorities or other methods like SMOTE will not work.<br/>
+                simply doing methods like oversampling minorities or SMOTE will not work as it messes with the overfitting and creates an illusion for the model.<br/>
                 Although underfitting in top countries cost some accuracy, the main problem is the <b>extreme imbalance</b> in classes<br/>
   - Solutions for class imbalance: 1. experimented on weights on lightgbm. But it didn't work as it exagerates the overfitting in rare categories and barely improve the recall<br/>
       *weights are applied on loss function when lightgbm develops a tree, making the model more "focused" on minorities, but because the imbalance is too extreme, it causes more overfitting and has limited benefits to validation metrics<br/>
@@ -70,7 +71,7 @@ train accuracy: 0.6389129217771897<br/>
 validation accuracy: 0.4809015347258973<br/>
     => By only applying weights is not enough to fix the extreme imbalance. Instead, it further exaggerated the problem of overfitting.
 
-3-6 Feb: train a model with two layers (region and country)
+3-6 Feb: train a model with two layers (region and country): main goal is to optimize top 5 accuracy and f1 (more balanced)
   - The idea is to classify the users into regions first then country.
   - grouping the countries into regions according to continent and culture(my instinct)
   - adjusted hyperparameters based on average users per country in each region (low -> tend to overfit -> smaller tree for generalization)
@@ -85,7 +86,6 @@ validation accuracy: 0.4809015347258973<br/>
   - the result is similar to that of base lightgbm. but need a deeper dive into the metrics to find possible improvements.
 
 9-10 Feb: clean up metrics and evaluate the model<br/>
-  ***main goal to optimize
   - Because the metrics are slightly lower than flat lightGBM (not what I expected), I spent more time on evaluating the process<br/>
   - metrics for first layer:<br/>
     
@@ -106,34 +106,34 @@ validation accuracy: 0.4809015347258973<br/>
     | Western Core / DACH      | 19610        | 13557        | 0.928     | 0.549      | 0.380     | 0.449    | 0.768          | 0.913   | 0.437    | 0.300   | 0.356  | 0.660        |
     <br/>
     Conclusion:<br/>
-      1. In this case, accuracy is not as important. The aim is to get a high top3 recall so the target country has a chance of standing out in the next stage.<br/>
-      2. When the number of users in the region get under 10000 the top3 recall gets bad as signals are weak and get surpressed by larger regions.<br/>
-      3. For small regions, the model results in a high precision low recall. This means that it is very selective on those regions.<br/>
+      1. The aim is to get a high top3 recall so the target country from every region has a chance of standing out in the next stage, not just those from large regions.<br/>
+      2. When the number of users in the region get under 10000 the top3 recall gets bad as signals are weak and get surpressed by larger regions. the model results in a high precision low recall. This means that it is very selective on those regions.<br/>
+      3. Larger regions have a very high top3 recall
       4. It seems like that regions have high overlap (which make sense as mainstream music has large global influence)<br/>
 
 
 ## Region-Level Country Classification Performance
+| Region                   | Entropy | Eff. Classes | Train Acc | Train Prec | Train Rec | Train F1 | Train Top-3 Acc | Train Top-3 Rec | Train Mean True Prob | Val Acc | Val Prec | Val Rec | Val F1 | Val Top-3 Acc | Val Top-3 Rec | Val Mean True Prob |
+| ------------------------ | ------- | ------------ | --------- | ---------- | --------- | -------- | --------------- | --------------- | -------------------- | ------- | -------- | ------- | ------ | ------------- | ------------- | ------------------ |
+| Africa                   | 2.96    | 5.81         | 0.448     | 0.669      | 0.181     | 0.171    | 0.785           | 0.605           | 0.261                | 0.430   | 0.125    | 0.161   | 0.126  | 0.691         | 0.430         | 0.234              |
+| East Asia                | 2.69    | 4.12         | 0.659     | 0.785      | 0.406     | 0.481    | 0.936           | 0.860           | 0.446                | 0.497   | 0.213    | 0.181   | 0.180  | 0.731         | 0.453         | 0.356              |
+| West Asia                | 3.05    | 5.93         | 0.758     | 0.891      | 0.516     | 0.622    | 0.955           | 0.865           | 0.531                | 0.610   | 0.226    | 0.211   | 0.213  | 0.826         | 0.329         | 0.451              |
+| Nordics                  | 1.92    | 3.32         | 0.799     | 0.891      | 0.649     | 0.716    | 0.990           | 0.955           | 0.548                | 0.580   | 0.349    | 0.336   | 0.314  | 0.897         | 0.653         | 0.451              |
+| Western Core / DACH      | 2.12    | 3.48         | 0.724     | 0.891      | 0.531     | 0.612    | 0.978           | 0.932           | 0.485                | 0.532   | 0.275    | 0.228   | 0.220  | 0.861         | 0.481         | 0.389              |
+| Anglo-Europe             | 0.33    | 1.13         | 0.939     | 0.469      | 0.500     | 0.484    | 1.000           | 1.000           | 0.904                | 0.936   | 0.468    | 0.500   | 0.484  | 1.000         | 1.000         | 0.890              |
+| Southern Europe          | 2.01    | 3.58         | 0.834     | 0.917      | 0.680     | 0.762    | 0.985           | 0.931           | 0.550                | 0.587   | 0.315    | 0.291   | 0.288  | 0.906         | 0.480         | 0.443              |
+| Central & Eastern Europe | 2.40    | 3.19         | 0.739     | 0.944      | 0.474     | 0.599    | 0.985           | 0.965           | 0.539                | 0.590   | 0.376    | 0.153   | 0.157  | 0.793         | 0.404         | 0.452              |
+| Balkans                  | 1.95    | 2.38         | 0.836     | 0.957      | 0.595     | 0.721    | 0.994           | 0.972           | 0.657                | 0.677   | 0.219    | 0.149   | 0.158  | 0.856         | 0.321         | 0.558              |
+| Anglo-America            | 0.57    | 1.27         | 0.884     | 0.983      | 0.436     | 0.549    | 1.000           | 1.000           | 0.813                | 0.880   | 0.126    | 0.143   | 0.134  | 0.997         | 0.495         | 0.796              |
+| Latin America            | 1.53    | 1.77         | 0.882     | 0.967      | 0.624     | 0.748    | 0.990           | 0.970           | 0.776                | 0.826   | 0.215    | 0.127   | 0.139  | 0.923         | 0.225         | 0.741              |
+| Oceania                  | 1.00    | 1.50         | 0.804     | 0.100      | 0.125     | 0.111    | 0.998           | 0.965           | 0.699                | 0.789   | 0.099    | 0.125   | 0.110  | 0.972         | 0.425         | 0.667              |
 
-| Region                   | Entropy  | Effective Classes | Train Acc | Train Prec | Train Rec | Train F1 | Train TopK | Val Acc  | Val Prec | Val Rec  | Val F1   | Val TopK |
-|--------------------------|----------|------------------|-----------|------------|-----------|----------|------------|----------|----------|----------|----------|----------|
-| Africa                   | 2.9609   | 5.8116           | 0.4481    | 0.6690     | 0.1813    | 0.1705   | 0.7851     | 0.4303   | 0.1254   | 0.1610   | 0.1255   | 0.6909   |
-| East Asia                | 2.6928   | 4.1160           | 0.6590    | 0.7848     | 0.4062    | 0.4807   | 0.9356     | 0.4969   | 0.2126   | 0.1811   | 0.1802   | 0.7315   |
-| West Asia                | 3.0533   | 5.9296           | 0.7580    | 0.8908     | 0.5164    | 0.6220   | 0.9555     | 0.6103   | 0.2263   | 0.2105   | 0.2129   | 0.8262   |
-| Nordics                  | 1.9171   | 3.3161           | 0.7991    | 0.8911     | 0.6490    | 0.7165   | 0.9899     | 0.5799   | 0.3490   | 0.3356   | 0.3135   | 0.8970   |
-| Western Core / DACH      | 2.1204   | 3.4799           | 0.7240    | 0.8907     | 0.5309    | 0.6125   | 0.9784     | 0.5325   | 0.2750   | 0.2277   | 0.2205   | 0.8611  
-| Anglo-Europe             | 0.3327   | 1.1301           | 0.9387    | 0.4693     | 0.5000    | 0.4842   | 1.0000     | 0.9365   | 0.4682   | 0.5000   | 0.4836   | 1.0000   |
-| Southern Europe          | 2.0073   | 3.5770           | 0.8342    | 0.9174     | 0.6805    | 0.7619   | 0.9849     | 0.5869   | 0.3146   | 0.2906   | 0.2884   | 0.9060   |
-| Central & Eastern Europe | 2.3977   | 3.1921           | 0.7386    | 0.9443     | 0.4736    | 0.5992   | 0.9855     | 0.5900   | 0.3758   | 0.1532   | 0.1566   | 0.7926   |
-| Balkans                  | 1.9547   | 2.3789           | 0.8363    | 0.9565     | 0.5952    | 0.7213   | 0.9937     | 0.6767   | 0.2195   | 0.1491   | 0.1577   | 0.8561   |
-| Anglo-America            | 0.5748   | 1.2674           | 0.8838    | 0.9834     | 0.4362    | 0.5491   | 1.0000     | 0.8796   | 0.1257   | 0.1429   | 0.1337   | 0.9967   |
-| Latin America            | 1.5258   | 1.7681           | 0.8819    | 0.9669     | 0.6235    | 0.7476   | 0.9902     | 0.8259   | 0.2147   | 0.1271   | 0.1394   | 0.9233   |
-| Oceania                  | 1.0005   | 1.4972           | 0.8037    | 0.1005     | 0.1250    | 0.1114   | 0.9979     | 0.7886   | 0.0986   | 0.1250   | 0.1102   | 0.9720   |
 
 <br/>
-      Conclusion:<br/> 1. The validation recall is at least 0.12 which is higher than macro recall of flat lightgbm -> this layer does provide a better classification <br/>
-                      2. The imbalance within region is still huge (low recall and decent accuracy) <br/>
+      Conclusion:<br/> 1. f1 score for each region is better than flat lightgbm -> more balanced <br/>
+                      2. The imbalance within region is still huge (neglecting small countries -> dominated by true negatives -> low recall and decent accuracy) <br/>
                       3. Add top k recall: if high-> the model does learn but tail county got dominated, if low -> the model did not learn at all<br/>
-                      4. high entropy represents more evenly distributed countries within region, which usually leads to more confusion shown by the low accuracy<br/>
+                      4. high entropy represents more distributed countries within region, which usually leads to more confusion shown by the low accuracy<br/>
                       5. low entropy represents an imbalance within the region, which usually leads to a high accuracy but low recall<br/>
                       6. Two main problems are overfitting (moderate training recall and bad validation recall) and ignoring minorities
                       7. Anglo-Europe and Oceania are only predicting the dominant country (recall = 1/num_countries)
@@ -149,9 +149,10 @@ validation accuracy: 0.4809015347258973<br/>
        1. Apply weights (training recall is also low for small regions, the model is not picking up patterns about them, so adding variance might work)<br/>
        2. I came across a 'focal loss' metric for the model to learn (it focuses more on minority examples), but it seems to be very hard to implement <br/>
        3. use SMOTE to try fighting the dominance of large regions (but it creates users linearly which might destroy the pattern as preference of a human is not necessarily linear)<br/>
+      4.  apply temperature scaling to flatten out the probabilities, giving small regions a better chance in the following stage. (but it will favor dominant countries of each region)<br/>
     Final Approach:<br/>
-        1. apply weights (possibly improve the top3 recall by having decision boundries not ignoring small regions wc​=min(5,sqrt(N / (K*nc)​) -> smaller class size larger weight (with cap and sqrt so it dont go crazy)<br/>
-        2. apply temperature scaling to flatten out the probabilities, giving small regions a better chance in the following stage.<br/>
+        1. apply weights (possibly improve the top3 recall by having decision boundries not ignoring small regions wc​=min(5,sqrt(N / (K*nc)​) -> smaller class size larger weight (with cap and sqrt so it dont go crazy), it might come with a cost of losing some recall for large regions<br/>
+        
 
   - Comparing performance of weighted and unweighted region model:
 
@@ -174,7 +175,7 @@ validation accuracy: 0.4809015347258973<br/>
 | Western Core / DACH      | 0.660                 | 0.6631                 | +0.0031              |
 
     
-    The weighted model definitely helped with recall by sacrificing some recall of the dominant regions.<br/>
+    The weighted model definitely helped with recall by sacrificing some recall of the dominant regions. Although this will cause a drop in final accuracy, it results in a more balanced model.<br/>
 
   - country-level classifier
       -> Solutions: <br/>
