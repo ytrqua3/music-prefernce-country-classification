@@ -180,14 +180,29 @@ validation accuracy: 0.4809015347258973<br/>
   - country-level classifier
       -> Solutions: <br/>
             1. use weights to force the model to look at minorities(for Africa, East Asia, Latin-America, Anglo-America, Anglo-Europe and Oceania apply inverse frequence, others apply log frequency which is less aggressive)(less aggressive on regions with moderate train recall->not collapsing  and overfitting)<br/>
-            2. use oversampling for Latin-America, Anglo-America, Anglo-Europe and Oceania (risk of overfitting, but since it is only predicting the dominant country, it might help the minorities without big tradeoff in overfitting)<br/>
-            3. to solve overfittng, increase the l2 penalty, min_data_in_leaf and decrease the num_leaves of lightgbm for regions that are overfitting<br/>
+            2. to solve overfittng, increase the l2 penalty, min_data_in_leaf and decrease the num_leaves of lightgbm for regions that are overfitting<br/>
+      -> Results: <br/>
+training accuracy: 0.4703155768349926
+validation accuracy: 0.43828409550789155
+training accuracy for top 10 countries:0.5931298467783747
+validation accuracy for top 10 countries:0.5629893857664868
+training accuracy for tail 10 countries:0.15521064301552107
+validation accuracy for tail 10 countries:0.0
+top5 accuracy of training: 0.7809048806555041
+top5 accuracy of validaton: 0.6948603804127883
+train Macro recall: 0.14261879644939626
+validation Macro recall: 0.06251870706692557
+train Macro precision: 0.6366666470772547
+validation Macro precision: 0.11361791201995255
+train Macro f1: 0.18466604944912227
+validation Macro f1: 0.06389570384411046
+train accuracy: 0.4703155768349926
+validation accuracy: 0.43828409550789155
 
+<b>Wrap up: after trying different methods to try to let the model see more of the rare countries, it failed and bottlenecked at 0.7. Therefore, I believe that the overlap between countries is the root cause and new signals should be introduced to the dataset to boost the hit@5. Since the dataset is provided by kaggle
     
 Next Stages:<br/>
- Feb: deploy the model as an endpoint (although two methods result in similar result, I deploy the two layer model to challenge myself)<br/>
-
- Feb: finalize aws glue for embeddings and connect with endpoint<br/>
-
+ 1.deploy endpoint
+ 2. introduce other embedding methods to include more signals that are not captured by word2vec
 
     
