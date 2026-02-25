@@ -206,6 +206,8 @@ validation accuracy: 0.43828409550789155<br/>
   - wrote a script.py that handles the training (main function) and inference(input_fn, output_fn, predict_fn, model_fn)
   - considered to store artist embeddings onto dynamodb and do the conversion from json(user top artists) to np array (user embeddings) on lambda but this will not be cost efficient
   - also it would be a hastle to connect the glue job to dynamodb through DynamicFrames
-  - lambda function api_handler.py is just dumping the json and checking the input before invoking the sagemaker endpoint 
+  - lambda function api_handler.py is just dumping the json and checking the input before invoking the sagemaker endpoint
+  - stuck with a dependency problem where scikit learn framework needs a lower version of numpy but requirements.txt did not specify it and pulled numpy>2 so the setup broke
+  - 
 
     
