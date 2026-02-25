@@ -1,41 +1,90 @@
 # script.py
 import pandas as pd
-import lightgbm as lgb
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
 import argparse
 import os
 import joblib
+import lightgbm as lgb
 import io
+import json
+import awswrangler as wr
+
 
 def model_fn(model_dir):
     """Load the LightGBM model"""
+    print("✅ in model_fn")
     model_path = os.path.join(model_dir, "model.txt")
+    print('✅successfully retrieved model')
     # or "model.joblib" if you used joblib
     model = lgb.Booster(model_file=model_path)
     le = joblib.load(os.path.join(model_dir, 'label_encoder.joblib'))
     return model, le
 
 def predict_fn(data, model_le):
+    print("✅ in predict_fn")
     model = model_le[0]
     le = model_le[1]
     probs = model.predict(data)
-    return le.inverse_transform(np.argsort(probs, axis=1)[0, -5:])
+    print('✅ successfully predicted')
+    top5_idx = np.argsort(probs, axis=1)[0, -5:]
+    preds = le.inverse_transform(top5_idx)
+    output = {'countries': preds.tolist(), 'probabilities': probs[0, top5_idx].tolist()}
+    print(f'final output: {output}')
+    return output
 
 def input_fn(request_body, request_content_type):
+    print('✅ in input_fn')
     if request_content_type == 'application/x-npy':
         # Most common case: SageMaker Python SDK → binary .npy
-        array = np.load(io.BytesIO(request_body), allow_pickle=False)
+        array = np.load(io.BytesIO(request_body), allow_pickle=True)
         if len(array) == 129:
-            return array
+            print("✅array with correct size detected")
+            return array.reshape(1, -1)
         else:
             raise ValueError(f'Incorrect number of features provided, should be 129, not {len(input_data)}')
+    elif request_content_type == 'application/json':
+        user_top_artists = request_body.get('top_artists')
+        user_total_scrobbles = request_body.get('total_scrobbles')
+        print("✅Recieved json request")
+
+        bucket = "music-preference-bucket"
+        prefix = "artist_embeddings/"
+
+        path = f"s3://{bucket}/{prefix}"
+        artist_embeddings_df = wr.s3.read_parquet(
+            path=path,
+            dataset=True,               # ← this makes it read the whole dataset (all files + partitions)
+            use_threads=True
+        )
+        print("✅Successfully fetched artist embeddings")
+        print(type(artist_embeddings_df))
+        print(type(artist_embeddings_df.loc['U2', 'vector']['values']))
+
+        total_weight = 0
+        user_embedding = np.zeros(128)
+        for artist in user_top_artists:
+            name = artist['artist_name']
+            artist['weight'] = np.log10(int(artist['playcount'])+1)
+            artist['emb'] = artist_embeddings_df.loc[name, 'vector']['values'].tolist()
+            artist['scaled_emb'] = artist['emb'] * artist['weight']
+            total_weight += artist['weight']
+            user_embedding += artist['scaled_emb']
+        user_embedding = user_embedding / total_weight
+        user_embedding = user_embedding.tolist()
+        user_embedding.append(np.log(user_total_scrobbles))
+        user_embedding = np.array(user_embedding)
+        print("✅Successfully computed user embeddings")
+        print(user_embedding)
+        return user_embedding.reshape(1, -1)
     else:
         raise ValueError(f'Incorrect request content type')
 
 
 def output_fn(prediction, accept):
     if accept == 'application/json':
+        print("✅dumping to output")
+        print(prediction)#{'countries': ['Germany', 'Australia', 'Canada', 'United Kingdom', 'United States'], 'probabilities': [0.019101389136249886, 0.026567849518657885, 0.07321074981649198, 0.1832723202432694, 0.5797086470198316]}
         return json.dumps(prediction), accept
     else:
         raise ValueError(f"unsupported accept type: {accept}")
@@ -114,7 +163,6 @@ def main():
     model.save_model(model_path)
     le_path = os.path.join(args.model_dir, 'label_encoder.joblib')
     joblib.dump(le, le_path)
-    print(f"✅Model saved to {model_path}")
 
 if __name__ == '__main__':
     print("✅inside script.py, calling main...")
