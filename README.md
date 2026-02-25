@@ -201,8 +201,11 @@ validation accuracy: 0.43828409550789155<br/>
 
 <b>Wrap up: after trying different methods to try to let the model see more of the rare countries, it failed and bottlenecked at 0.7. Therefore, I believe that the overlap between countries is the root cause and new signals should be introduced to the dataset to boost the hit@5. Since the dataset is provided by kaggle
     
-Next Stages:<br/>
- 1.deploy endpoint
- 2. introduce other embedding methods to include more signals that are not captured by word2vec
+20-24 Feb: train the model on sagemaker, deploy an inference endpoint and api gateway
+  - trained lightgbm using the SKLearn framework store it to s3 then deploy it
+  - wrote a script.py that handles the training (main function) and inference(input_fn, output_fn, predict_fn, model_fn)
+  - considered to store artist embeddings onto dynamodb and do the conversion from json(user top artists) to np array (user embeddings) on lambda but this will not be cost efficient
+  - also it would be a hastle to connect the glue job to dynamodb through DynamicFrames
+  - lambda function api_handler.py is just dumping the json and checking the input before invoking the sagemaker endpoint 
 
     
