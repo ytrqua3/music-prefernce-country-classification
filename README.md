@@ -211,6 +211,6 @@ validation accuracy: 0.43828409550789155<br/>
   - the final api call:
 
 
-!(api)[https://github.com/ytrqua3/music-prefernce-country-classification/blob/edff449dac40e3291046204813eeccf906498ed3/api-result.PNG]
+![api](https://github.com/ytrqua3/music-prefernce-country-classification/blob/edff449dac40e3291046204813eeccf906498ed3/api-result.PNG)
 
     
