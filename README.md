@@ -199,7 +199,7 @@ validation Macro f1: 0.06389570384411046<br/>
 train accuracy: 0.4703155768349926<br/>
 validation accuracy: 0.43828409550789155<br/>
 
-<b>Wrap up: after trying different methods to try to let the model see more of the rare countries, it failed and bottlenecked at 0.7. Therefore, I believe that the overlap between countries is the root cause and new signals should be introduced to the dataset to boost the hit@5. Since the dataset is provided by kaggle
+<b>Wrap up: after trying different methods to try to let the model see more of the rare countries, it failed and bottlenecked at 0.7. Therefore, I believe that the overlap between countries is the root cause and new signals should be introduced to the dataset to boost the hit@5. Since the dataset is provided by kaggle<b/>
     
 20-24 Feb: train the model on sagemaker, deploy an inference endpoint and api gateway
   - trained lightgbm using the SKLearn framework store it to s3 then deploy it
@@ -208,7 +208,7 @@ validation accuracy: 0.43828409550789155<br/>
   - also it would be a hastle to connect the glue job to dynamodb through DynamicFrames
   - lambda function api_handler.py is just dumping the json and checking the input before invoking the sagemaker endpoint
   - stuck with a dependency problem where scikit learn framework needs a lower version of numpy but requirements.txt did not specify it and pulled numpy>2 so the setup broke
-  - the final api call:
+  - the final api call using postman:
 
 
 ![api](https://github.com/ytrqua3/music-prefernce-country-classification/blob/edff449dac40e3291046204813eeccf906498ed3/api-result.PNG)
