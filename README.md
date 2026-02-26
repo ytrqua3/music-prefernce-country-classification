@@ -200,7 +200,7 @@ validation Macro f1: 0.06389570384411046<br/>
 train accuracy: 0.4703155768349926<br/>
 validation accuracy: 0.43828409550789155<br/>
 
-<b>Wrap up: after trying different methods to try to let the model see more of the rare countries, it failed and bottlenecked at 0.7. Therefore, I believe that the overlap between countries is the root cause and new signals should be introduced to the dataset to boost the hit@5. Since the dataset is provided by kaggle<b/>
+<b>Wrap up: after trying different methods to try to let the model see more of the rare countries, it failed and bottlenecked at 0.7. Therefore, I believe that the overlap between countries is the root cause and new signals should be introduced to the dataset to boost the hit@5.<b/>
     
 20-24 Feb: train the model on sagemaker, deploy an inference endpoint and api gateway
   - trained lightgbm using the SKLearn framework store it to s3 then deploy it
