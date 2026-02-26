@@ -209,6 +209,8 @@ validation accuracy: 0.43828409550789155<br/>
   - lambda function api_handler.py is just dumping the json and checking the input before invoking the sagemaker endpoint
   - stuck with a dependency problem where scikit learn framework needs a lower version of numpy but requirements.txt did not specify it and pulled numpy>2 so the setup broke
   - the final api call:
+
+
 !(api)[https://github.com/ytrqua3/music-prefernce-country-classification/blob/edff449dac40e3291046204813eeccf906498ed3/api-result.PNG]
 
     
