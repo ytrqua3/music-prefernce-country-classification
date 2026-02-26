@@ -3,7 +3,8 @@ This project is an extension to the term-project-3280.
 
 link to project: https://github.com/ytrqua3/news_aggregator_project
 
-After taking CPSC3280 in Langara, I found that the course mainly focuses on introducing different cloud services (e.g. ec2, s3, load balancer, Kinesis, Aurora, DynamoDB...) and building data ETL pipelines using AWS Glue and pyspark. In the term project, I deployed a pipeline that aggregates data and api gateways to fetch the data. Within the project, spark was used to form embeddings for each artist using a simple neural network model called word2vec. Later, an idea that I could predict users' country according to their preference in artists popped up. 
+After taking CPSC3280 in Langara, I found that the course mainly focuses on introducing different cloud services (e.g. ec2, s3, load balancer, Kinesis, Aurora, DynamoDB...) and building data ETL pipelines using AWS Glue and pyspark. In the term project, I deployed a pipeline that aggregates data and api gateways to fetch the data. Within the project, spark was used to form embeddings for each artist using a simple neural network model called word2vec. Later, an idea that I could predict users' country according to their preference in artists popped up. <br/><br/>
+project summary: user top 50 artists -> glue spark -> user embeddings -> experiment with logistic regression, lightgbm and soft hierarchial two layer lightgbm (region -> country) -> picked and deploy flat lightgbm -> expose it using api gateway <br/><br/> 
 
 
 Log of notes and learning:
@@ -213,4 +214,5 @@ validation accuracy: 0.43828409550789155<br/>
 
 ![api](https://github.com/ytrqua3/music-prefernce-country-classification/blob/edff449dac40e3291046204813eeccf906498ed3/api-result.PNG)
 
-    
+
+I spent a month exploring and learning the world of machine learning. From algorithms' logic (gradient boosting) to evaluating models(looking at recalls, top5 accuracy ...) to bringing them to life (sagemaker endpoint). I found out that most work is evaluating the weakness of models and find ways to improve it. In this project, I thought extreme imbalance will be the main problem, but no, it was the overlap in vector space of users in different countries due to their similar preference to music (globalization perhaps?). Although I could have captured more signals using other embedding methods, I decided to move onto deployment first. Because I learnt about using frameworks in sagemaker in my other news aggregator classification project, most work was dealing with bug after bug. This was a fun project and I look forward to improve the model in the future.    
